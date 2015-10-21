@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--
+File:  /~tkuczyns/GUI_Assign1/happy.html
+91.461 Assignment 3:  Using CSS
+Therese M. Kuczynski, UMass Lowell Computer Science Student, therese_kuczynski@student.uml.edu
+Copyright (c) 2015 by Therese M. Kuczynski.  All rights reserved.  May be freely
+ copied or excerpted for educational purposes with credit to the author.
+updated by TMK on September 23, 2015 at 1:32 AM
+-->
+    <meta charset="UTF-8">
+    <title>Multiplication Table</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+    <style>
+        body{
+          background-color: #CCFAFF;
+        }
+
+        #mult-table{
+          background-color: black;
+          color: black;
+        }
+        #mult-table td{
+          padding: 5px;
+          background-color: aqua;
+       }
+        #mult-table td:first-child{
+          background: teal;
+        }
+
+        #mult-table tr:first-child td{
+          background: teal;
+        }
+
+        #mult-table tr:first-child td:first-child{
+          background: white;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+ <form id="grid">
+     Horizontal axis from <input type="text" name="x_low"> to <input type="text" name="x_high">
+     <br>
+     Vertical axis from <input type="text" name="y_low"> to <input type="text" name="y_high">
+     <br>
+     <input type="submit" value="Submit">
+     <br><br>
+ </form>
+
+<table id="mult-table", border="on"></table>
+
+</body>
+
+<script>
+//Getting elements from:
+//http://www.w3schools.com/jsref/coll_form_elements.asp
+
+  document.getElementById("grid").onsubmit = (function(e) {
+      //Create object with everything we need.
+      var table_params = {};
+      table_params.x_low = parseInt(document.getElementById("grid").x_low.value);
+      table_params.x_high = parseInt(document.getElementById("grid").x_high.value);
+      table_params.y_low = parseInt(document.getElementById("grid").y_low.value);
+      table_params.y_high = parseInt(document.getElementById("grid").y_high.value);
+      if (validate_params(table_params))
+      {
+        testfunc(table_params);
+      }
+      //http://stackoverflow.com/questions/15146506/onsubmit-makes-text-printed-using-innerhtml-disappears
+      e.preventDefault();
+  });
+
+// Dynamically adding rows and columns to table:
+// http://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_table_insertrow
+function testfunc(table_params)
+{
+    //Add counters to the table_params object.
+    table_params.counter_x_low = table_params.x_low;
+    table_params.counter_y_low = table_params.y_low;
+    var i = 0;
+    var j = 1;
+
+    //Get multiplication table for editing.
+    var m_table = document.getElementById("mult-table");
+
+    //Delete preexisting table to create a new one.
+    //Learned about innerHTML from: http://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_form_elements_index
+    m_table.innerHTML = " ";
+
+    //Loop for each y.
+    for(table_params.counter_y_low; table_params.counter_y_low <= table_params.y_high; table_params.counter_y_low ++, i++)
+    {
+      //Insert new row.
+      var new_row = m_table.insertRow(i);
+      make_row(new_row, table_params, j);
+
+      //After finishing cells for a row, reinitialize j to 1, and reset the counter for
+      //the low value of x.
+      j = 1;
+      table_params.counter_x_low = table_params.x_low;
+    } //End outer for loop.
+    make_header(m_table, table_params, j);
+}
+
+function validate_params(table_params)
+{
+  //isInt from http://stackoverflow.com/questions/14636536/how-to-check-if-a-variable-is-an-integer-in-javascript
+  //Make sure all values are numbers.
+  if (isNaN(table_params.x_low) || isNaN(table_params.x_high) || isNaN(table_params.y_low) || isNaN(table_params.y_high))
+  { 
+     alert("At least one value is not a valid number.");
+     return false;
+  }
+
+  if(table_params.x_low == " " || table_params.x_high == " " || table_params.y_low == " " || table_params.y_high == " ")
+  {
+    alert("Please fill in all fields.");
+    return false;
+  }
+  //If x_low is higher than x_high, or y_low is higher than y_high, swap values.
+  swap_if_reversed(table_params);
+
+  //Make sure numbers are under 500.
+    if(table_params.x_low < -200 || table_params.y_low < -200 || table_params.x_high > 200 || table_params.y_high > 200)
+      {
+        alert("Values cannot be bigger than 200 or smaller than -200.");
+        return false;
+      }
+  //Make sure x_low and x_high are not the same at the same time as y_low and y_high are.
+    if(table_params.x_low == table_params.x_high && table_params.y_low == table_params.y_high)
+      {
+        alert("All four values cannot be the same.");
+        return false;
+      }
+    return true;
+}
+
+function swap_if_reversed(table_params)
+{
+ if(table_params.x_low > table_params.x_high)
+    {
+      var temp = table_params.x_low;
+      table_params.x_low = table_params.x_high;
+      table_params.x_high = temp;
+    }
+    if(table_params.y_low > table_params.y_high)
+      {
+        var temp = table_params.y_low;
+        table_params.y_low = table_params.y_high;
+        table_params.y_high = temp;
+      }
+ }
+
+function make_row(new_row, table_params, j)
+{
+//Loop for each x.
+      for(table_params.counter_x_low; table_params.counter_x_low <= table_params.x_high; table_params.counter_x_low ++, j++)
+      {
+        //j==1 when it's the first cell of a row.
+        if(j == 1)
+        {
+          //Instead of a multiplied value, it should have the value.
+          new_cell = new_row.insertCell(0);
+          new_cell.innerHTML = table_params.counter_y_low;
+        }
+        //Add a cell with the multiplied value.
+        new_cell = new_row.insertCell(j);
+        new_cell.innerHTML = table_params.counter_x_low * table_params.counter_y_low;
+      }
+}
+
+function make_header(m_table, table_params, j)
+  {
+    //Create top header.
+    var new_row = m_table.insertRow(0);
+    for(table_params.counter_x_low; table_params.counter_x_low <= table_params.x_high; table_params.counter_x_low ++, j++)
+    {
+       new_cell = new_row.insertCell(j-1);
+       if(j==1)
+       {
+         new_cell.innerHTML = "";
+         new_cell = new_row.insertCell(j);
+         j++;
+       }
+       new_cell.innerHTML = table_params.counter_x_low;
+   }
+}
+</script>
+
+</html>
