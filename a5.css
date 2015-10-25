@@ -1,0 +1,34 @@
+/* File:  /~tkuczyns/GUI_Assign1/happy.html
+91.461 Assignment 5:  Multiplication Table
+Therese M. Kuczynski, UMass Lowell Computer Science Student, therese_kuczynski@student.uml.edu
+Copyright (c) 2015 by Therese M. Kuczynski.  All rights reserved.  May be freely
+ copied or excerpted for educational purposes with credit to the author.
+updated by TMK on October 25, 2015 at 11:00AM. */
+
+        body{
+          background-color: #CCFAFF;
+        }
+
+        h1{
+          color: teal; 
+        }
+
+        #mult-table{
+          background-color: black;
+          color: black;
+        }
+        #mult-table td{
+          padding: 5px;
+          background-color: aqua;
+       }
+        #mult-table td:first-child{
+          background: teal;
+        }
+
+        #mult-table tr:first-child td{
+          background: teal;
+        }
+
+        #mult-table tr:first-child td:first-child{
+          background: white;
+        }
